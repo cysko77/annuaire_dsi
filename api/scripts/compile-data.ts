@@ -3,12 +3,13 @@ import { env } from "../src/env";
 
 (async () => {
     const { core } = await bootstrapCore({
-        "keycloakUserApiParams": undefined,
-        "gitDbApiParams": {
-            "dataRepoSshUrl": "git@github.com:codegouvfr/sill-data.git",
-            "sshPrivateKey": env.sshPrivateKeyForGit,
-            "sshPrivateKeyName": env.sshPrivateKeyForGitName
+        "dbConfig" : {
+            dbKind:"git",
+            dataRepoSshUrl: env.dataRepoSshUrl,
+            sshPrivateKey: env.sshPrivateKeyForGit,
+            sshPrivateKeyName: env.sshPrivateKeyForGitName,
         },
+        "keycloakUserApiParams": env.keycloakParams,
         "githubPersonalAccessTokenForApiRateLimit": env.githubPersonalAccessTokenForApiRateLimit,
         "doPerPerformPeriodicalCompilation": false,
         "doPerformCacheInitialization": false,
