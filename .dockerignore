@@ -38,6 +38,7 @@ kubernetes
 /api/dist
 /web/node_modules
 /web/build
+/web/build_keycloak
 /web/.storybook
 
 /docs

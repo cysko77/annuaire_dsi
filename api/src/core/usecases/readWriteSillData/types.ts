@@ -113,7 +113,7 @@ type Prerogatives = {
 };
 export type Prerogative = keyof Prerogatives;
 
-export type Os = "windows" | "linux" | "mac" | "android" | "ios";
+export type Os = "windows" | "linux" | "mac";
 
 export type SoftwareFormData = {
     softwareType: SoftwareType;

@@ -47,8 +47,6 @@ export namespace State {
         | "mac"
         | "browser"
         | "stack"
-        | "android"
-        | "ios";
 
     type Prerogatives = {
         isPresentInSupportContract: boolean;

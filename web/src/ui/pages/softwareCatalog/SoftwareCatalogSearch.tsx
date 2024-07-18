@@ -411,8 +411,6 @@ export const { i18n } = declareComponentKeys<
     | "windows"
     | "browser"
     | "stack"
-    | "ios"
-    | "android"
     | {
           K: "number of prerogatives selected";
           P: { count: number };

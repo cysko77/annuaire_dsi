@@ -397,9 +397,7 @@ const softwares = [
             "os": {
                 "linux": true,
                 "mac": true,
-                "windows": true,
-                "android": true,
-                "ios": true
+                "windows": true
             }
         },
         "userAndReferentCountByOrganization": {
@@ -500,9 +498,7 @@ const softwares = [
             "os": {
                 "linux": true,
                 "mac": true,
-                "windows": true,
-                "android": true,
-                "ios": true
+                "windows": true
             }
         },
         "testUrl": undefined,
@@ -616,9 +612,7 @@ const softwares = [
             "os": {
                 "linux": true,
                 "windows": true,
-                "mac": true,
-                "android": true,
-                "ios": true
+                "mac": true
             }
         },
         "similarSoftwares": [
@@ -682,9 +676,7 @@ const softwares = [
             "os": {
                 "linux": true,
                 "mac": true,
-                "windows": true,
-                "android": true,
-                "ios": true
+                "windows": true
             }
         },
         "parentWikidataSoftware": undefined,
@@ -761,9 +753,7 @@ const softwares = [
             "os": {
                 "linux": true,
                 "mac": true,
-                "windows": true,
-                "android": true,
-                "ios": true
+                "windows": true
             }
         },
         "similarSoftwares": [],
@@ -898,9 +888,7 @@ const softwares = [
             "os": {
                 "linux": true,
                 "mac": true,
-                "windows": true,
-                "android": true,
-                "ios": true
+                "windows": true
             }
         },
         "similarSoftwares": [],
@@ -944,9 +932,7 @@ const softwares = [
             "os": {
                 "linux": true,
                 "mac": true,
-                "windows": true,
-                "android": true,
-                "ios": true
+                "windows": true
             }
         },
         "similarSoftwares": [],
@@ -990,9 +976,7 @@ const softwares = [
             "os": {
                 "linux": true,
                 "mac": true,
-                "windows": true,
-                "android": true,
-                "ios": true
+                "windows": true
             }
         },
         "similarSoftwares": [],
@@ -1036,9 +1020,7 @@ const softwares = [
             "os": {
                 "linux": true,
                 "mac": true,
-                "windows": true,
-                "android": true,
-                "ios": true
+                "windows": true
             }
         },
         "similarSoftwares": [],
@@ -1082,9 +1064,7 @@ const softwares = [
             "os": {
                 "linux": true,
                 "mac": true,
-                "windows": true,
-                "android": true,
-                "ios": true
+                "windows": true
             }
         },
         "similarSoftwares": [],
@@ -1128,9 +1108,7 @@ const softwares = [
             "os": {
                 "linux": true,
                 "mac": true,
-                "windows": true,
-                "android": true,
-                "ios": true
+                "windows": true
             }
         },
         "similarSoftwares": [],
@@ -1174,9 +1152,7 @@ const softwares = [
             "os": {
                 "linux": true,
                 "mac": true,
-                "windows": true,
-                "android": true,
-                "ios": true
+                "windows": true
             }
         },
         "similarSoftwares": [],
@@ -1220,9 +1196,7 @@ const softwares = [
             "os": {
                 "linux": true,
                 "mac": true,
-                "windows": true,
-                "android": true,
-                "ios": true
+                "windows": true
             }
         },
         "similarSoftwares": [],

@@ -650,11 +650,6 @@ function filterByEnvironnement(params: {
             case "linux":
             case "mac":
             case "windows":
-            case "android":
-            case "ios":
-                return (
-                    softwareType.type === "desktop/mobile" && softwareType.os[environment]
-                );
             case "browser":
                 return softwareType.type === "cloud";
             case "stack":
@@ -857,9 +852,7 @@ function internalSoftwareToExternalSoftware(params: {
             "isInstallableOnUserComputer":
                 softwareType.type === "desktop/mobile" &&
                 (softwareType.os.windows || softwareType.os.linux || softwareType.os.mac),
-            "isAvailableAsMobileApp":
-                softwareType.type === "desktop/mobile" &&
-                (softwareType.os.android || softwareType.os.ios),
+            "isAvailableAsMobileApp":false,
             "isTestable": testUrl !== undefined
         },
         parentSoftware,

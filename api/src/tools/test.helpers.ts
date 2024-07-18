@@ -38,9 +38,7 @@ export const createSoftwareFormData = makeObjectFactory<SoftwareFormData>({
         os: {
             windows: true,
             linux: true,
-            mac: true,
-            android: false,
-            ios: false
+            mac: true
         }
     },
     externalId: "Q171985",

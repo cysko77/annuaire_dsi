@@ -315,9 +315,7 @@ function apiSoftwareToSoftware(params: {
                 softwareType.type === "stack"
                     ? undefined
                     : softwareType.type === "desktop/mobile",
-            "isAvailableAsMobileApp":
-                softwareType.type === "desktop/mobile" &&
-                (softwareType.os.android || softwareType.os.ios),
+            "isAvailableAsMobileApp":false,
             "isPresentInSupportContract": prerogatives.isPresentInSupportContract,
             "isFromFrenchPublicServices": prerogatives.isFromFrenchPublicServices,
             "doRespectRgaa": prerogatives.doRespectRgaa ?? undefined

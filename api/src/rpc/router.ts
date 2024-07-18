@@ -510,9 +510,7 @@ const zSoftwareType = z.union([
         "os": z.object({
             "windows": z.boolean(),
             "linux": z.boolean(),
-            "mac": z.boolean(),
-            "android": z.boolean(),
-            "ios": z.boolean()
+            "mac": z.boolean()
         })
     }),
     z.object({
@@ -530,7 +528,7 @@ const zSoftwareType = z.union([
     assert<Equals<Got, Expected>>();
 }
 
-const zOs = z.enum(["windows", "linux", "mac", "android", "ios"]);
+const zOs = z.enum(["windows", "linux", "mac"]);
 
 {
     type Got = ReturnType<(typeof zOs)["parse"]>;

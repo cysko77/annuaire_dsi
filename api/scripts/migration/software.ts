@@ -13,7 +13,7 @@ cd ~/github/sill/sill-data
 ts-node --skipProject ../sill-api/src/scripts/migration/software.ts
 */
 
-const zOs = z.enum(["windows", "linux", "mac", "android", "ios"]);
+const zOs = z.enum(["windows", "linux", "mac"]);
 
 {
     type Got = ReturnType<(typeof zOs)["parse"]>;
@@ -28,9 +28,7 @@ const zSoftwareType = z.union([
         "os": z.object({
             "windows": z.boolean(),
             "linux": z.boolean(),
-            "mac": z.boolean(),
-            "android": z.boolean(),
-            "ios": z.boolean()
+            "mac": z.boolean()
         })
     }),
     z.object({

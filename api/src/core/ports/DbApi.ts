@@ -99,7 +99,7 @@ export namespace Db {
     export type DbApiAndInitializeCache = { dbApi: DbApi; initializeDbApiCache: () => Promise<void> };
 }
 
-export type Os = "windows" | "linux" | "mac" | "android" | "ios";
+export type Os = "windows" | "linux" | "mac";
 
 export type SoftwareType = SoftwareType.Desktop | SoftwareType.CloudNative | SoftwareType.Stack;
 

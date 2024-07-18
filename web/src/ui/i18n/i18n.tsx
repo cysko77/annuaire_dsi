@@ -337,8 +337,8 @@ const {
                 "software cloud hint": "Public cloud or your organization's cloud",
                 "module": "Brick or technical modules",
                 "module hint": "For example proxies, HTTP servers or plugins",
-                "checkbox legend":
-                    "Operating system on which the software can be installed"
+                "checkbox legend":"Operating system on which the software can be installed",
+                "field required" : 'The field is required'
             },
             "SoftwareFormStep2": {
                 "external id": externalId("en"),
@@ -464,9 +464,7 @@ const {
                 "browser": "Web browser",
                 "stack": "Library, Framework and other technical building blocks",
                 "number of prerogatives selected": ({ count }) =>
-                    count === 0 ? "None" : `${count} selected`,
-                "ios": "iOS (iPhone)",
-                "android": "Android Smartphones"
+                    count === 0 ? "None" : `${count} selected`
             },
             "SoftwareDetails": {
                 "catalog breadcrumb": "Software catalog",
@@ -1005,8 +1003,8 @@ const {
                 "software cloud hint": "Cloud public ou cloud de votre organisation",
                 "module": "Briques ou modules techniques",
                 "module hint": "Par exemple des proxy, serveurs HTTP ou plugins",
-                "checkbox legend":
-                    "Système d'exploitation sur lequel le logiciel peut être installé"
+                "checkbox legend":"Système d'exploitation sur lequel le logiciel peut être installé",
+                "field required" : 'Le champ est obligatoire',
             },
             "SoftwareFormStep2": {
                 "external id": externalId("fr"),
@@ -1140,9 +1138,7 @@ const {
                 "number of prerogatives selected": ({ count }) =>
                     count === 0
                         ? "Aucune"
-                        : `${count} sélectionnée${count === 1 ? "" : "s"}`,
-                "ios": "iOS (iPhone)",
-                "android": "Téléphone Android"
+                        : `${count} sélectionnée${count === 1 ? "" : "s"}`
             },
             "SoftwareDetails": {
                 "catalog breadcrumb": "Le catalogue de logiciels",
