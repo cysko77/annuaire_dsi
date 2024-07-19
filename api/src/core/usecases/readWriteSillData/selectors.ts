@@ -15,316 +15,316 @@ const sliceState = (state: RootState) => state[name];
 const compiledData = createSelector(sliceState, state => state.compiledData);
 
 const similarSoftwarePartition = createSelector(compiledData, (compiledData): Software.SimilarSoftware[][] => {
-    const compiledSoftwareByWikidataId: { [wikidataId: string]: CompiledData.Software<"private"> } = {};
+  const compiledSoftwareByWikidataId: { [wikidataId: string]: CompiledData.Software<"private"> } = {};
 
-    compiledData.forEach(software => {
-        if (software.softwareExternalData === undefined) {
-            return;
-        }
-        compiledSoftwareByWikidataId[software.softwareExternalData.externalId] = software;
-    });
+  compiledData.forEach(software => {
+    if (software.softwareExternalData === undefined) {
+      return;
+    }
+    compiledSoftwareByWikidataId[software.softwareExternalData.externalId] = software;
+  });
 
-    const compiledSoftwareByName: { [name: string]: CompiledData.Software<"private"> } = {};
+  const compiledSoftwareByName: { [name: string]: CompiledData.Software<"private"> } = {};
 
-    compiledData.forEach(software => {
-        compiledSoftwareByName[software.name] = software;
-    });
+  compiledData.forEach(software => {
+    compiledSoftwareByName[software.name] = software;
+  });
 
-    function wikidataSoftwareToSimilarSoftware(
-        externalSoftwareData: Pick<
-            SoftwareExternalData,
-            "externalId" | "label" | "description" | "isLibreSoftware" | "externalDataOrigin"
-        >
-    ): Software.SimilarSoftware {
-        const software = compiledSoftwareByWikidataId[externalSoftwareData.externalId];
+  function wikidataSoftwareToSimilarSoftware(
+    externalSoftwareData: Pick<
+      SoftwareExternalData,
+      "externalId" | "label" | "description" | "isLibreSoftware" | "externalDataOrigin"
+    >
+  ): Software.SimilarSoftware {
+    const software = compiledSoftwareByWikidataId[externalSoftwareData.externalId];
 
-        if (software === undefined) {
-            return {
-                "isInSill": false,
-                "externalId": externalSoftwareData.externalId,
-                "externalDataOrigin": externalSoftwareData.externalDataOrigin,
-                "label": externalSoftwareData.label,
-                "description": externalSoftwareData.description,
-                "isLibreSoftware": externalSoftwareData.isLibreSoftware
-            };
-        }
-
-        return {
-            "isInSill": true,
-            "softwareName": software.name,
-            "softwareDescription": software.description
-        };
+    if (software === undefined) {
+      return {
+        "isInSill": false,
+        "externalId": externalSoftwareData.externalId,
+        "externalDataOrigin": externalSoftwareData.externalDataOrigin,
+        "label": externalSoftwareData.label,
+        "description": externalSoftwareData.description,
+        "isLibreSoftware": externalSoftwareData.isLibreSoftware
+      };
     }
 
-    const similarSoftwarePartition: Software.SimilarSoftware[][] = [];
+    return {
+      "isInSill": true,
+      "softwareName": software.name,
+      "softwareDescription": software.description
+    };
+  }
 
-    compiledData.forEach(o => {
-        const softwareAlreadySeen = new Set<string>();
+  const similarSoftwarePartition: Software.SimilarSoftware[][] = [];
 
-        for (const similarSoftwares of similarSoftwarePartition) {
-            for (const similarSoftware of similarSoftwares) {
-                if (!similarSoftware.isInSill) {
-                    continue;
-                }
-                if (similarSoftware.softwareName === o.name) {
-                    return;
-                }
-                softwareAlreadySeen.add(similarSoftware.softwareName);
-            }
+  compiledData.forEach(o => {
+    const softwareAlreadySeen = new Set<string>();
+
+    for (const similarSoftwares of similarSoftwarePartition) {
+      for (const similarSoftware of similarSoftwares) {
+        if (!similarSoftware.isInSill) {
+          continue;
+        }
+        if (similarSoftware.softwareName === o.name) {
+          return;
+        }
+        softwareAlreadySeen.add(similarSoftware.softwareName);
+      }
+    }
+
+    function getPartition(similarSoftware: Software.SimilarSoftware): Software.SimilarSoftware[] {
+      {
+        const id = similarSoftware.isInSill ? similarSoftware.softwareName : similarSoftware.externalId;
+
+        if (softwareAlreadySeen.has(id)) {
+          return [];
         }
 
-        function getPartition(similarSoftware: Software.SimilarSoftware): Software.SimilarSoftware[] {
-            {
-                const id = similarSoftware.isInSill ? similarSoftware.softwareName : similarSoftware.externalId;
+        softwareAlreadySeen.add(id);
+      }
 
-                if (softwareAlreadySeen.has(id)) {
-                    return [];
+      return id<Software.SimilarSoftware[]>([
+        similarSoftware,
+        ...(() => {
+          if (!similarSoftware.isInSill) {
+            return [];
+          }
+
+          const software = compiledSoftwareByName[similarSoftware.softwareName];
+
+          assert(software !== undefined);
+
+          return software.similarExternalSoftwares
+            .map(wikidataSoftware => getPartition(wikidataSoftwareToSimilarSoftware(wikidataSoftware)))
+            .flat();
+        })(),
+        ...compiledData
+          .map(software => {
+            const hasCurrentSimilarSoftwareInItsListOfSimilarSoftware =
+              software.similarExternalSoftwares.find(externalSoftware => {
+                const similarSoftware_i = wikidataSoftwareToSimilarSoftware(externalSoftware);
+
+                if (similarSoftware.isInSill) {
+                  return (
+                    similarSoftware_i.isInSill &&
+                    similarSoftware_i.softwareName === similarSoftware.softwareName
+                  );
+                } else {
+                  return externalSoftware.externalId === similarSoftware.externalId;
                 }
+              }) !== undefined;
 
-                softwareAlreadySeen.add(id);
+            if (!hasCurrentSimilarSoftwareInItsListOfSimilarSoftware) {
+              return undefined;
             }
 
-            return id<Software.SimilarSoftware[]>([
-                similarSoftware,
-                ...(() => {
-                    if (!similarSoftware.isInSill) {
-                        return [];
-                    }
+            return getPartition({
+              "isInSill": true,
+              "softwareName": software.name,
+              "softwareDescription": software.description
+            });
+          })
+          .filter(exclude(undefined))
+          .flat()
+      ]);
+    }
 
-                    const software = compiledSoftwareByName[similarSoftware.softwareName];
+    similarSoftwarePartition.push(
+      getPartition(
+        id<Software.SimilarSoftware.Sill>({
+          "isInSill": true,
+          "softwareName": o.name,
+          "softwareDescription": o.description
+        })
+      )
+    );
+  });
 
-                    assert(software !== undefined);
-
-                    return software.similarExternalSoftwares
-                        .map(wikidataSoftware => getPartition(wikidataSoftwareToSimilarSoftware(wikidataSoftware)))
-                        .flat();
-                })(),
-                ...compiledData
-                    .map(software => {
-                        const hasCurrentSimilarSoftwareInItsListOfSimilarSoftware =
-                            software.similarExternalSoftwares.find(externalSoftware => {
-                                const similarSoftware_i = wikidataSoftwareToSimilarSoftware(externalSoftware);
-
-                                if (similarSoftware.isInSill) {
-                                    return (
-                                        similarSoftware_i.isInSill &&
-                                        similarSoftware_i.softwareName === similarSoftware.softwareName
-                                    );
-                                } else {
-                                    return externalSoftware.externalId === similarSoftware.externalId;
-                                }
-                            }) !== undefined;
-
-                        if (!hasCurrentSimilarSoftwareInItsListOfSimilarSoftware) {
-                            return undefined;
-                        }
-
-                        return getPartition({
-                            "isInSill": true,
-                            "softwareName": software.name,
-                            "softwareDescription": software.description
-                        });
-                    })
-                    .filter(exclude(undefined))
-                    .flat()
-            ]);
-        }
-
-        similarSoftwarePartition.push(
-            getPartition(
-                id<Software.SimilarSoftware.Sill>({
-                    "isInSill": true,
-                    "softwareName": o.name,
-                    "softwareDescription": o.description
-                })
-            )
-        );
-    });
-
-    return similarSoftwarePartition;
+  return similarSoftwarePartition;
 });
 
 const softwares = createSelector(compiledData, similarSoftwarePartition, (compiledData, similarSoftwarePartition) => {
-    return compiledData.map(
-        (o): Software => ({
-            "serviceProviders": o.serviceProviders,
-            "logoUrl": o.logoUrl ?? o.softwareExternalData?.logoUrl ?? o.comptoirDuLibreSoftware?.logoUrl,
-            "softwareId": o.id,
-            "softwareName": o.name,
-            "softwareDescription": o.description,
-            "latestVersion": o.latestVersion,
-            "testUrl": o.testUrls[0]?.url,
-            "addedTime": o.referencedSinceTime,
-            "updateTime": o.updateTime,
-            "dereferencing": o.dereferencing,
-            "categories": o.categories,
-            "prerogatives": {
-                "doRespectRgaa": o.doRespectRgaa,
-                "isFromFrenchPublicServices": o.isFromFrenchPublicService,
-                "isPresentInSupportContract": o.isPresentInSupportContract
-            },
-            "userAndReferentCountByOrganization": (() => {
-                const out: Software["userAndReferentCountByOrganization"] = {};
+  return compiledData.map(
+    (o): Software => ({
+      "serviceProviders": o.serviceProviders,
+      "logoUrl": o.logoUrl ?? o.softwareExternalData?.logoUrl ?? o.comptoirDuLibreSoftware?.logoUrl,
+      "softwareId": o.id,
+      "softwareName": o.name,
+      "softwareDescription": o.description,
+      "latestVersion": o.latestVersion,
+      "testUrl": o.testUrls[0]?.url,
+      "addedTime": o.referencedSinceTime,
+      "updateTime": o.updateTime,
+      "dereferencing": o.dereferencing,
+      "categories": o.categories,
+      "prerogatives": {
+        "doRespectRgaa": o.doRespectRgaa,
+        "isFromFrenchPublicServices": o.isFromFrenchPublicService,
+        "isSoftwareHasHealthData": o.isSoftwareHasHealthData
+      },
+      "userAndReferentCountByOrganization": (() => {
+        const out: Software["userAndReferentCountByOrganization"] = {};
 
-                o.referents.forEach(referent => {
-                    const entry = (out[referent.organization] ??= { "referentCount": 0, "userCount": 0 });
-                    entry.referentCount++;
-                });
-                o.users.forEach(user => {
-                    const entry = (out[user.organization] ??= { "referentCount": 0, "userCount": 0 });
-                    entry.userCount++;
-                });
+        o.referents.forEach(referent => {
+          const entry = (out[referent.organization] ??= { "referentCount": 0, "userCount": 0 });
+          entry.referentCount++;
+        });
+        o.users.forEach(user => {
+          const entry = (out[user.organization] ??= { "referentCount": 0, "userCount": 0 });
+          entry.userCount++;
+        });
 
-                return out;
-            })(),
-            "authors":
-                o.softwareExternalData?.developers.map(developer => ({
-                    "authorName": developer.name,
-                    "authorUrl": `https://www.wikidata.org/wiki/${developer.id}`
-                })) ?? [],
-            "officialWebsiteUrl":
-                o.softwareExternalData?.websiteUrl ??
-                o.comptoirDuLibreSoftware?.external_resources.website ??
-                undefined,
-            "codeRepositoryUrl":
-                o.softwareExternalData?.sourceUrl ??
-                o.comptoirDuLibreSoftware?.external_resources.repository ??
-                undefined,
-            "documentationUrl": o.softwareExternalData?.documentationUrl,
-            "versionMin": o.versionMin,
-            "license": o.license,
-            "comptoirDuLibreServiceProviderCount": o.comptoirDuLibreSoftware?.providers.length ?? 0,
-            "annuaireCnllServiceProviders": o.annuaireCnllServiceProviders,
-            "comptoirDuLibreId": o.comptoirDuLibreSoftware?.id,
-            "externalId": o.softwareExternalData?.externalId,
-            "externalDataOrigin": o.softwareExternalData?.externalDataOrigin,
-            "softwareType": o.softwareType,
-            "parentWikidataSoftware": o.parentWikidataSoftware,
-            "similarSoftwares": (() => {
-                for (const similarSoftwares of similarSoftwarePartition) {
-                    for (const similarSoftware of similarSoftwares) {
-                        if (!similarSoftware.isInSill) {
-                            continue;
-                        }
-                        if (similarSoftware.softwareName === o.name) {
-                            return similarSoftwares.filter(item => item !== similarSoftware);
-                        }
-                    }
-                }
+        return out;
+      })(),
+      "authors":
+        o.softwareExternalData?.developers.map(developer => ({
+          "authorName": developer.name,
+          "authorUrl": `https://www.wikidata.org/wiki/${developer.id}`
+        })) ?? [],
+      "officialWebsiteUrl":
+        o.softwareExternalData?.websiteUrl ??
+        o.comptoirDuLibreSoftware?.external_resources.website ??
+        undefined,
+      "codeRepositoryUrl":
+        o.softwareExternalData?.sourceUrl ??
+        o.comptoirDuLibreSoftware?.external_resources.repository ??
+        undefined,
+      "documentationUrl": o.softwareExternalData?.documentationUrl,
+      "versionMin": o.versionMin,
+      "license": o.license,
+      "comptoirDuLibreServiceProviderCount": o.comptoirDuLibreSoftware?.providers.length ?? 0,
+      "annuaireCnllServiceProviders": o.annuaireCnllServiceProviders,
+      "comptoirDuLibreId": o.comptoirDuLibreSoftware?.id,
+      "externalId": o.softwareExternalData?.externalId,
+      "externalDataOrigin": o.softwareExternalData?.externalDataOrigin,
+      "softwareType": o.softwareType,
+      "parentWikidataSoftware": o.parentWikidataSoftware,
+      "similarSoftwares": (() => {
+        for (const similarSoftwares of similarSoftwarePartition) {
+          for (const similarSoftware of similarSoftwares) {
+            if (!similarSoftware.isInSill) {
+              continue;
+            }
+            if (similarSoftware.softwareName === o.name) {
+              return similarSoftwares.filter(item => item !== similarSoftware);
+            }
+          }
+        }
 
-                return [];
-            })(),
-            "keywords": [...o.keywords, ...(o.comptoirDuLibreSoftware?.keywords ?? [])].reduce(
-                ...removeDuplicates<string>((k1, k2) => k1.toLowerCase() === k2.toLowerCase())
-            )
-        })
-    );
+        return [];
+      })(),
+      "keywords": [...o.keywords, ...(o.comptoirDuLibreSoftware?.keywords ?? [])].reduce(
+        ...removeDuplicates<string>((k1, k2) => k1.toLowerCase() === k2.toLowerCase())
+      )
+    })
+  );
 });
 
 const instances = createSelector(compiledData, (compiledData): Instance[] =>
-    compiledData
-        .map(software => software.instances.map(instance => ({ ...instance, "mainSoftwareSillId": software.id })))
-        .flat()
-        .map(
-            ({
-                id,
-                organization,
-                targetAudience,
-                publicUrl,
-                otherWikidataSoftwares,
-                addedByAgentEmail,
-                mainSoftwareSillId
-            }) => ({
-                id,
-                mainSoftwareSillId,
-                organization,
-                targetAudience,
-                publicUrl,
-                otherWikidataSoftwares,
-                addedByAgentEmail
-            })
-        )
+  compiledData
+    .map(software => software.instances.map(instance => ({ ...instance, "mainSoftwareSillId": software.id })))
+    .flat()
+    .map(
+      ({
+        id,
+        organization,
+        targetAudience,
+        publicUrl,
+        otherWikidataSoftwares,
+        addedByAgentEmail,
+        mainSoftwareSillId
+      }) => ({
+        id,
+        mainSoftwareSillId,
+        organization,
+        targetAudience,
+        publicUrl,
+        otherWikidataSoftwares,
+        addedByAgentEmail
+      })
+    )
 );
 
 const agents = createSelector(sliceState, state =>
-    state.db.agentRows.map((agentRow): Agent => {
-        const getSoftwareName = (softwareId: number) => {
-            const row = state.db.softwareRows.find(row => row.id === softwareId);
+  state.db.agentRows.map((agentRow): Agent => {
+    const getSoftwareName = (softwareId: number) => {
+      const row = state.db.softwareRows.find(row => row.id === softwareId);
 
-            assert(row !== undefined);
+      assert(row !== undefined);
 
-            return row.name;
-        };
+      return row.name;
+    };
 
-        return {
-            "email": agentRow.email,
-            "declarations": [
-                ...state.db.softwareUserRows
-                    .filter(row => row.agentEmail === agentRow.email)
-                    .map((row): DeclarationFormData.User & { softwareName: string } => ({
-                        "declarationType": "user",
-                        "usecaseDescription": row.useCaseDescription,
-                        "os": row.os,
-                        "version": row.version,
-                        "serviceUrl": row.serviceUrl,
-                        "softwareName": getSoftwareName(row.softwareId)
-                    })),
-                ...state.db.softwareReferentRows
-                    .filter(row => row.agentEmail === agentRow.email)
-                    .map((row): DeclarationFormData.Referent & { softwareName: string } => ({
-                        "declarationType": "referent",
-                        "isTechnicalExpert": row.isExpert,
-                        "usecaseDescription": row.useCaseDescription,
-                        "serviceUrl": row.serviceUrl,
-                        "softwareName": getSoftwareName(row.softwareId)
-                    }))
-            ],
-            "organization": agentRow.organization
-        };
-    })
+    return {
+      "email": agentRow.email,
+      "declarations": [
+        ...state.db.softwareUserRows
+          .filter(row => row.agentEmail === agentRow.email)
+          .map((row): DeclarationFormData.User & { softwareName: string } => ({
+            "declarationType": "user",
+            "usecaseDescription": row.useCaseDescription,
+            "os": row.os,
+            "version": row.version,
+            "serviceUrl": row.serviceUrl,
+            "softwareName": getSoftwareName(row.softwareId)
+          })),
+        ...state.db.softwareReferentRows
+          .filter(row => row.agentEmail === agentRow.email)
+          .map((row): DeclarationFormData.Referent & { softwareName: string } => ({
+            "declarationType": "referent",
+            "isTechnicalExpert": row.isExpert,
+            "usecaseDescription": row.useCaseDescription,
+            "serviceUrl": row.serviceUrl,
+            "softwareName": getSoftwareName(row.softwareId)
+          }))
+      ],
+      "organization": agentRow.organization
+    };
+  })
 );
 
 const aboutAndIsPublicByAgentEmail = createSelector(
-    sliceState,
-    (state): Record<string, { isPublic: boolean; about: string | undefined } | undefined> =>
-        Object.fromEntries(
-            state.db.agentRows.map(agentRow => [
-                agentRow.email,
-                {
-                    "isPublic": agentRow.isPublic,
-                    "about": agentRow.about
-                }
-            ])
-        )
+  sliceState,
+  (state): Record<string, { isPublic: boolean; about: string | undefined } | undefined> =>
+    Object.fromEntries(
+      state.db.agentRows.map(agentRow => [
+        agentRow.email,
+        {
+          "isPublic": agentRow.isPublic,
+          "about": agentRow.about
+        }
+      ])
+    )
 );
 
 const referentCount = createSelector(
-    agents,
-    agents =>
-        agents
-            .filter(
-                agent =>
-                    agent.declarations.find(declaration => declaration.declarationType === "referent") !== undefined
-            )
-            .map(agent => agent.email)
-            .reduce(...removeDuplicates()).length
+  agents,
+  agents =>
+    agents
+      .filter(
+        agent =>
+          agent.declarations.find(declaration => declaration.declarationType === "referent") !== undefined
+      )
+      .map(agent => agent.email)
+      .reduce(...removeDuplicates()).length
 );
 
 const compiledDataPublicJson = createSelector(sliceState, state => {
-    const { compiledData } = state;
+  const { compiledData } = state;
 
-    return JSON.stringify(compiledDataPrivateToPublic(compiledData), null, 2);
+  return JSON.stringify(compiledDataPrivateToPublic(compiledData), null, 2);
 });
 
 export const protectedSelectors = {
-    similarSoftwarePartition
+  similarSoftwarePartition
 };
 
 export const selectors = {
-    softwares,
-    instances,
-    agents,
-    referentCount,
-    compiledDataPublicJson,
-    aboutAndIsPublicByAgentEmail
+  softwares,
+  instances,
+  agents,
+  referentCount,
+  compiledDataPublicJson,
+  aboutAndIsPublicByAgentEmail
 };
