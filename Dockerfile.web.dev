@@ -31,4 +31,5 @@ FROM base AS runner
 WORKDIR /app
 COPY --from=installer /app/ .
 WORKDIR /app/web
+RUN yarn prepare
 CMD [ "yarn" , "run", "dev" ]
