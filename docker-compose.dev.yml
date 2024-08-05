@@ -1,0 +1,37 @@
+services:
+  api:
+    build:
+      dockerfile: Dockerfile.api.dev
+      context: .
+      args:
+        TURBO_TEAM: ars_api_dev_
+        TURBO_TOKEN: 66b1095417775
+    container_name: api_${SILL_API_PORT}_${USER}
+    env_file: .env
+    restart: unless-stopped
+    volumes:
+      - "./api/:/app/api/"
+    ports:
+      - "${SILL_API_PORT}:3084"
+    networks:
+      - app
+  web:
+    build:
+      dockerfile: Dockerfile.web.dev
+      context: .
+      args:
+        TURBO_TEAM: ars_web_dev_
+        TURBO_TOKEN: 66b109cb6a624
+    container_name: web_${SILL_WEB_PORT}_${USER}
+    volumes :
+      - "./web/:/app/web/"
+    ports:
+      - "${SILL_WEB_PORT}:3000"
+    networks:
+      - app
+    depends_on:
+      - api
+    restart: unless-stopped
+networks:
+  app:
+    name: app_${USER}

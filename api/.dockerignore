@@ -26,9 +26,9 @@ build/Release
 server/*.spec.js
 kubernetes
 
-/dist
-/data
-/Dockerfile
-/node_modules
-/.github
-/.vscode
+dist
+data
+Dockerfile
+node_modules
+.github
+.vscode
