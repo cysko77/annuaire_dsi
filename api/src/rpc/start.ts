@@ -49,7 +49,7 @@ export async function startRpcService(params: {
         externalSoftwareDataOrigin,
         ...rest
     } = params;
-
+    console.info(port);
     assert<Equals<typeof rest, {}>>();
 
     console.log({ isDevEnvironnement });

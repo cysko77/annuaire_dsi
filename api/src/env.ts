@@ -39,6 +39,7 @@ const zConfiguration = z.object({
 
 const getJsonConfiguration = () => {
     const { CONFIGURATION } = process.env;
+    console.info('cyrille263');
     if (CONFIGURATION) {
         try {
             return JSONC.parse(CONFIGURATION) as any;

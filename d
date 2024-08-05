@@ -8,16 +8,16 @@ options=(
   "Demarrer Application"
   "Arreter Application"
   "Revoir les options"
-  "Afficher debug de l'application"
-  "Changer port web"
-  "Changer port api"
-  "Afficher debug de l'application"
+  "Redemarrer Api"
+  "Debug"
+  #"Changer port web"
+  #"Changer port api"
   "Afficher les containers Docker"
   "Supprimer un container Docker"
   "Arreter tous les containers Docker"
-  "Liste des ports utilisés"
+  #"Liste des ports utilisés"
   "Afficher les images Docker"
-  "Supprimer une image Docker"
+  #"Supprimer une image Docker"
   "Quitter"
 )
 
@@ -27,6 +27,11 @@ function change_port_web {
   read -p $'\e[33m$ ⬤ Entrez le port web [Defaut: 3000]: \e[0m' port
   echo "Nouveau port attribué : $port"
   export SILL_WEB_PORT=${port}
+}
+
+function reboot_api {
+  printf "${GREEN} ⬤ Restart Api en cours ...${NC}\r\n"
+  docker container restart api_${SILL_API_PORT}_${USER} && printf "${GREEN} ✔ Restart Api terminé${NC}\r\n"
 }
 
 function change_port_api {
@@ -109,7 +114,10 @@ select option in "${options[@]}"; do
   "Arreter Application")
     stop_app
     ;;
-  "Afficher debug de l'application")
+  "Redemarrer Api")
+    reboot_api
+    ;;
+  "Debug")
     show_debug
     ;;
   "Afficher les images Docker")
