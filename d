@@ -31,7 +31,7 @@ function change_port_web {
 
 function reboot_api {
   printf "${GREEN} ⬤ Restart Api en cours ...${NC}\r\n"
-  docker container restart api_${SILL_API_PORT}_${USER} && printf "${GREEN} ✔ Restart Api terminé${NC}\r\n"
+  docker compose -f ${dc_file} restart api && printf "${GREEN} ✔ Restart Api terminé${NC}\r\n"
 }
 
 function change_port_api {
@@ -48,7 +48,7 @@ function start_app {
   x=$?
   while [[ $x -ne 0 ]]; do
     sleep 2
-    curl --head --silent --fail http://localhost:${SILL_WEB_PORT} >/dev/null
+    curl -m 1 --head --silent --fail http://localhost:${SILL_WEB_PORT} >/dev/null
     x=$?
     printf "${ORANGE}...${NC}"
   done
