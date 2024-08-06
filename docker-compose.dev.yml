@@ -34,7 +34,7 @@ services:
       - /app/web/public/dsfr/
       - /app/web/public/keycloak-resources/
     ports:
-      - "${SILL_WEB_PORT}:${SILL_WEB_PORT}"
+      - "${SILL_WEB_PORT}:3000"
     networks:
       - app
     depends_on:

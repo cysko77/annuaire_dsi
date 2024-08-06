@@ -44,15 +44,15 @@ function start_app {
   printf "${GREEN} ⬤ Demarrage de l'application en cours ...${NC}\r\n"
   [[ "$(docker compose -f ${dc_file} ps | grep api | wc -l)" -gt "0" ]] && docker compose -f ${dc_file} down
   docker compose -f ${dc_file} up -d && printf "\r\n${GREEN} ✔${NC} Veuillez patienter quelques secondes "
-  $(curl --head --silent --fail "http://localhost:${SILL_WEB_PORT}")
+  $(curl --head --silent --fail "http://${IP}:${SILL_WEB_PORT}")
   x=$?
   while [[ $x -ne 0 ]]; do
     sleep 2
-    curl -m 1 --head --silent --fail http://localhost:${SILL_WEB_PORT} >/dev/null
+    curl -m 1 --head --silent --fail http://${IP}:${SILL_WEB_PORT} >/dev/null
     x=$?
     printf "${ORANGE}...${NC}"
   done
-  printf "\r\n${GREEN} ✔${NC} Annuaire si inter ARS est dispo via ${ORANGE}http://localhost:${SILL_WEB_PORT}${NC}\r\n"
+  printf "\r\n${GREEN} ✔${NC} Annuaire si inter ARS est dispo via ${ORANGE}http://${IP}:${SILL_WEB_PORT}${NC}\r\n"
 }
 
 function stop_app {
