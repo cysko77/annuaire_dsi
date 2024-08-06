@@ -6,6 +6,7 @@ services:
       args:
         TURBO_TEAM: ars_api_dev_
         TURBO_TOKEN: 66b1095417775
+    image: ars.api.${USER}
     container_name: api_${SILL_API_PORT}_${USER}
     env_file: .env
     restart: unless-stopped
@@ -15,7 +16,7 @@ services:
       - /app/api/dist/
       - /app/api/.turbo/
     ports:
-      - "${SILL_API_PORT}:3084"
+      - "${SILL_API_PORT}:${SILL_API_PORT}"
     networks:
       - app
   web:
@@ -25,6 +26,7 @@ services:
       args:
         TURBO_TEAM: ars_web_dev_
         TURBO_TOKEN: 66b109cb6a624
+    image: ars.web.${USER}
     container_name: web_${SILL_WEB_PORT}_${USER}
     volumes :
       - "./web/:/app/web/"
@@ -32,7 +34,7 @@ services:
       - /app/web/public/dsfr/
       - /app/web/public/keycloak-resources/
     ports:
-      - "${SILL_WEB_PORT}:3000"
+      - "${SILL_WEB_PORT}:${SILL_WEB_PORT}"
     networks:
       - app
     depends_on:
