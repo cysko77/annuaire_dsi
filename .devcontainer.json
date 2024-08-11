@@ -1,0 +1,13 @@
+{
+  "name": "Sill Dev Container",
+  "dockerComposeFile": "docker-compose.dev.yml",
+  "service": "web",
+  "workspaceFolder": "/workspace",
+  "shutdownAction": "stopCompose",
+  "features": {
+  },
+  "forwardPorts": [
+    "web:3000",
+    "api:3084"
+  ]
+}
