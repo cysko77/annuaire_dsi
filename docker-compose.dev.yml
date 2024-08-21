@@ -12,9 +12,9 @@ services:
     restart: unless-stopped
     volumes:
       - "./api/:/app/api/"
-      - /app/api/node_modules/
-      - /app/api/dist/
-      - /app/api/.turbo/
+      - api_node_modules:/app/api/node_modules/
+      - dist:/app/api/dist/
+      - turbo:/app/api/.turbo/
     ports:
       - "${SILL_API_PORT}:${SILL_API_PORT}"
     networks:
@@ -28,11 +28,13 @@ services:
         TURBO_TOKEN: 66b109cb6a624
     image: ars.web.${USER}
     container_name: web_${SILL_WEB_PORT}_${USER}
+    env_file: .env
     volumes :
       - "./web/:/app/web/"
-      - /app/web/node_modules/
-      - /app/web/public/dsfr/
-      - /app/web/public/keycloak-resources/
+      - web_node_modules:/app/web/node_modules/
+      - node_modules:/app/node_modules/
+      - dsfr:/app/web/public/dsfr/
+      - keycloakify:/app/web/public/keycloak-resources/
     ports:
       - "${SILL_WEB_PORT}:3000"
     networks:
@@ -43,3 +45,33 @@ services:
 networks:
   app:
     name: app_${USER}
+volumes:
+  dsfr:
+    name: dsfr_${USER}
+  keycloakify:
+    name: keycloakify_${USER}
+  dist:
+    name: dist_${USER}
+  turbo:
+    name: turbo_${USER}
+  web_node_modules:
+    name: web_node_modules_${USER}
+    driver: local 
+    driver_opts:
+      type: none
+      device: "${PWD}/web/node_modules"
+      o: bind
+  api_node_modules:
+    name: api_node_modules_${USER}
+    driver: local 
+    driver_opts:
+      type: none
+      device: "${PWD}/api/node_modules"
+      o: bind
+  node_modules:
+    name: node_modules_${USER}
+    driver: local 
+    driver_opts:
+      type: none
+      device: "${PWD}/node_modules"
+      o: bind
